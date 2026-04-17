@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動互動看板</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Header: Title Animation and Host Links -->
+        <header class="header">
+            <div class="header-left">
+                <h1 id="event-title" class="title-animation">請輸入活動名稱</h1>
+                <input type="text" id="event-title-input" placeholder="設定活動名稱...">
+            </div>
+            <div class="header-right host-links">
+                <select id="theme-switcher" class="theme-select" title="切換主題">
+                    <option value="system">💻 系統</option>
+                    <option value="dark">🌙 暗色</option>
+                    <option value="light">☀️ 亮色</option>
+                </select>
+                <a href="#" id="link-fb" target="_blank" title="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="#" id="link-yt" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="#" id="link-ig" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <button id="edit-links-btn" title="編輯連結"><i class="fas fa-edit"></i></button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Marquee Section -->
+            <section class="panel marquee-panel">
+                <div class="marquee-container" id="marquee-container">
+                    <div class="marquee-content" id="marquee-content">歡迎來到本活動！可以設定跑馬燈內容。</div>
+                </div>
+                <div class="marquee-controls">
+                    <input type="text" id="marquee-text" placeholder="輸入跑馬燈文字 (支援 Emoji 🚀)">
+                    <input type="color" id="marquee-color" value="#ffffff" title="文字顏色">
+                    <input type="color" id="marquee-bg" value="#333333" title="背景顏色">
+                    <input type="range" id="marquee-speed" min="1" max="20" value="10" title="速度">
+                </div>
+            </section>
+
+            <!-- Video & Timer Section -->
+            <div class="grid-layout">
+                <section class="panel video-panel">
+                    <h2><i class="fas fa-video"></i> 影片播放區</h2>
+                    <div class="video-input-group">
+                        <input type="text" id="yt-url" placeholder="貼上 YouTube 網址 (例如: https://www.youtube.com/watch?v=...)">
+                        <button id="load-yt-btn" class="btn primary-btn">載入影片</button>
+                    </div>
+                    <div class="video-container" id="video-container">
+                        <div class="video-placeholder">影片將顯示於此處</div>
+                    </div>
+                </section>
+
+                <div class="side-panels">
+                    <!-- Timer Section -->
+                    <section class="panel timer-panel">
+                        <h2><i class="fas fa-stopwatch"></i> 倒數計時器</h2>
+                        <div class="timer-display" id="timer-display">05:00</div>
+                        <div class="timer-controls">
+                            <input type="number" id="timer-min" min="0" placeholder="分" value="5">
+                            <span style="font-weight:bold; font-size:1.2rem; align-self:center;">:</span>
+                            <input type="number" id="timer-sec" min="0" max="59" placeholder="秒" value="0">
+                        </div>
+                        <div class="timer-actions">
+                            <button id="start-timer-btn" class="btn success-btn">開始倒數</button>
+                            <button id="reset-timer-btn" class="btn danger-btn">重設</button>
+                        </div>
+                    </section>
+
+                    <!-- Lottery Section -->
+                    <section class="panel lottery-panel">
+                        <h2><i class="fas fa-dice"></i> 隨機抽號碼</h2>
+                        <div class="lottery-settings">
+                            <div class="input-row">
+                                <label>範圍：</label>
+                                <input type="number" id="lottery-min" value="1" min="1" placeholder="起">
+                                <span style="font-weight:bold;">-</span>
+                                <input type="number" id="lottery-max" value="50" min="1" placeholder="迄">
+                            </div>
+                            <div class="input-row">
+                                <label>排除：</label>
+                                <input type="text" id="lottery-exclude" placeholder="如 5,12,30">
+                            </div>
+                            <div class="input-row">
+                                <label>數量：</label>
+                                <input type="number" id="lottery-count" value="1" min="1" max="50">
+                            </div>
+                            <div class="checkbox-row">
+                                <input type="checkbox" id="lottery-unique" checked>
+                                <label for="lottery-unique">避免重複抽取 (抽過不放回)</label>
+                            </div>
+                        </div>
+                        <div class="lottery-actions">
+                            <button id="draw-btn" class="btn primary-btn pulse-anim">開抽！</button>
+                            <button id="clear-draw-btn" class="btn outline-btn">清除紀錄</button>
+                        </div>
+                        <div class="lottery-result" id="lottery-result">
+                            <div class="result-placeholder">號碼將顯示於此處</div>
+                        </div>
+                        <div class="lottery-history">
+                            <h4>已抽出：</h4>
+                            <div id="lottery-history-list"></div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            
+            <!-- Interactive Area (Bottom) -->
+            <section class="panel interactive-panel">
+                <h2><i class="fas fa-hand-sparkles"></i> 互動打賞區</h2>
+                <div class="interactive-buttons">
+                    <button class="interact-btn like-btn" data-type="like">
+                        <span class="icon">❤️</span> <span class="count" id="count-like">0</span>
+                    </button>
+                    <button class="interact-btn star-btn" data-type="star">
+                        <span class="icon">⭐</span> <span class="count" id="count-star">0</span>
+                    </button>
+                    <button class="interact-btn rocket-btn" data-type="rocket">
+                        <span class="icon">🚀</span> <span class="count" id="count-rocket">0</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Link Editor Modal -->
+    <div id="link-modal" class="modal">
+        <div class="modal-content">
+            <h3>編輯社群連結</h3>
+            <div class="input-group">
+                <label><i class="fab fa-facebook"></i> Facebook 網址</label>
+                <input type="text" id="input-fb" placeholder="輸入 Facebook 網址">
+            </div>
+            <div class="input-group">
+                <label><i class="fab fa-youtube"></i> YouTube 網址</label>
+                <input type="text" id="input-yt" placeholder="輸入 YouTube 網址">
+            </div>
+            <div class="input-group">
+                <label><i class="fab fa-instagram"></i> Instagram 網址</label>
+                <input type="text" id="input-ig" placeholder="輸入 Instagram 網址">
+            </div>
+            <div class="modal-actions">
+                <button id="save-links-btn" class="btn primary-btn">儲存</button>
+                <button id="close-modal-btn" class="btn outline-btn">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Sound (Timer) -->
+    <audio id="timer-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+    <!-- Firebase SDK Setup -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getDatabase, ref, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+        // Firebase Configuration
+        // 請將下方的 "YOUR_..." 替換成你在 Firebase Console 取得的設定
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // 僅在設定完成時初始化 Firebase (避免未設定時報錯)
+        let db = null;
+        try {
+            if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+                const app = initializeApp(firebaseConfig);
+                db = getDatabase(app);
+            } else {
+                console.warn("Firebase 尚未設定。互動區點擊將僅在本地端生效，不會跨裝置同步。");
+            }
+        } catch (e) {
+            console.error("Firebase 初始化失敗:", e);
+        }
+
+        window.firebaseDB = db;
+        window.firebaseRef = ref;
+        window.firebaseRunTransaction = runTransaction;
+        window.firebaseOnValue = onValue;
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
